@@ -2,32 +2,33 @@ QUnit.test("getIpDoneCallback", function (assert) {
     var elem = document.getElementById("qunit-fixture")
         .getElementsByClassName("your-ip");
     assert.equal(elem[0].innerHTML, "Your IP: ", "Initial HTML element content is correct");
-    getIpDoneCallback({'ip': '8.8.8.8'});
+    getIpDoneCallback({'data': {'ip': '8.8.8.8'}});
     assert.equal(elem[0].innerHTML, "Your IP: 8.8.8.8", "IP address is correctly set");
 });
 
-QUnit.test("getIpFailCallback", function (assert) {
+QUnit.test("getIpFailCallback bad request (status=400)", function (assert) {
     var elem = document.getElementById("qunit-fixture")
         .getElementsByClassName("your-ip");
     assert.equal(elem[0].innerHTML, "Your IP: ", "Initial HTML element content is correct");
-    getIpFailCallback();
-    assert.equal(elem[0].innerHTML, "Your IP: " + 'Unable to access geolocation service. '
-        + 'Please try again or contact system administrator', 'Error message is correctly set');
+    getIpFailCallback({status: 400, responseJSON: {error: {message: 'Error text'}}});
+    assert.equal(elem[0].innerHTML, "Your IP: " + 'Error text');
 });
 
-QUnit.test("getIp success response (mocking AJAX call)", function (assert) {
+QUnit.test("getIpFailCallback internal server error or other error statuses", function (assert) {
+    var elem = document.getElementById("qunit-fixture")
+        .getElementsByClassName("your-ip");
+    assert.equal(elem[0].innerHTML, "Your IP: ", "Initial HTML element content is correct");
+    getIpFailCallback({status: 500});
+    assert.equal(elem[0].innerHTML, "Your IP: " + 'Unable to access geolocation service. '
+        + 'Please try again or contact system administrator');
+});
+
+QUnit.test("getIp test done-callback is called (AJAX call)", function () {
 
     let server = sinon.createFakeServer();
     server.respondImmediately = true;
 
-    $.ajaxSetup({
-        async: false
-    });
-
-    var elem = document.getElementById("qunit-fixture")
-        .getElementsByClassName("your-ip");
-    assert.equal(elem[0].innerHTML, "Your IP: ", "Initial HTML element content is correct");
-
+    $.ajaxSetup({async: false});
 
     // console.log(server.requests); // Logs all requests so far
 
@@ -39,13 +40,70 @@ QUnit.test("getIp success response (mocking AJAX call)", function (assert) {
 
 
     var callback = sinon.spy();
-    getIp(backendUrl, getIpDoneCallback, getIpFailCallback);
+    getIp(backendUrl, callback, callback);
 
     server.respond();
 
-    // sinon.assert.calledWith(callback, {ip: "8.8.8.8"});
-
-    assert.equal(elem[0].innerHTML, "Your IP: 8.8.8.8", "IP address is correctly set");
+    sinon.assert.calledWith(callback, {ip: "8.8.8.8"});
 
     server.restore();
+
+    QUnit.assert.ok(true, "getIp done-callback is called correctly");
+});
+
+QUnit.test("getGeolocation", function (assert) {
+    var elem = document.getElementById("qunit-fixture")
+        .getElementsByClassName("additional-info");
+    assert.equal(elem[0].innerHTML, "", "Initial HTML element content is correct");
+    geolocationDoneCallback({'data': {'city': 'Mountain View', 'country': 'US'}});
+    assert.equal(
+        elem[0].innerHTML,
+        '<span id="city">City: Mountain View</span>&nbsp;' + '<span id="country">Country: US</span>',
+        "IP address is correctly set"
+    );
+});
+
+QUnit.test("geolocationFailCallback bad request (status=400)", function (assert) {
+    var elem = document.getElementById("qunit-fixture")
+        .getElementsByClassName("additional-info");
+    assert.equal(elem[0].innerHTML, "", "Initial HTML element content is correct");
+    geolocationFailCallback({status: 400, responseJSON: {error: {message: 'Error text'}}});
+    assert.equal(elem[0].innerHTML, 'Error text');
+});
+
+QUnit.test("getIpFailCallback internal server error or other error statuses", function (assert) {
+    var elem = document.getElementById("qunit-fixture")
+        .getElementsByClassName("additional-info");
+    assert.equal(elem[0].innerHTML, "", "Initial HTML element content is correct");
+    geolocationFailCallback({status: 500});
+    assert.equal(elem[0].innerHTML, 'Unable to access geolocation service. '
+        + 'Please try again or contact system administrator');
+});
+
+QUnit.test("getGeolocation test done-callback is called (AJAX call)", function () {
+
+    let server = sinon.createFakeServer();
+    server.respondImmediately = true;
+
+    $.ajaxSetup({async: false});
+
+    // console.log(server.requests); // Logs all requests so far
+
+    server.respondWith("GET", backendUrl, [
+        200,
+        {"Content-Type": "application/json"},
+        JSON.stringify({'data': {'city': 'Mountain View', 'country': 'US'}})
+    ]);
+
+
+    var callback = sinon.spy();
+    getGeolocation(backendUrl, callback, callback);
+
+    server.respond();
+
+    sinon.assert.calledWith(callback, {'data': {'city': 'Mountain View', 'country': 'US'}});
+
+    server.restore();
+
+    QUnit.assert.ok(true, "getIp done-callback is called correctly");
 });
