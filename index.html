@@ -28,7 +28,7 @@
         getIp(backendUrl, getIpDoneCallback, getIpFailCallback);
 
         $("button").click(function () {
-            getGeolocation(backendUrl + "/ipinfo", getIpDoneCallback, getIpFailCallback)
+            getGeolocation(backendUrl + "/ipinfo", geolocationDoneCallback, geolocationFailCallback)
         });
     });
 </script>
