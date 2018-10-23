@@ -19,6 +19,8 @@ See "Usage/testing" section.
 
 ## Installation:
 		
+    - git clone https://github.com/vgrankin/geolocation_service_frontend
+
     - no special installation is required. All components are CDN-based, 
       so you can simply run index.html		
 		
@@ -31,7 +33,7 @@ See "Usage/testing" section.
 - JS functionality is located at ./backend.js
 - Tests are located in ./tests/tests.js file. ./tests/index.html simply mimics ./index.html file with QUnit addons
      
-## Usage/testing:
+## Usage/testing:    
 
     First of all, start your backend server. Then set correct path using "backendUrl" 
     variable located in backend.js file (and make sure backend server is running).
