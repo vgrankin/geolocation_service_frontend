@@ -1,4 +1,5 @@
 let backendUrl = "http://localhost:8000/api";
+let allowedErrorStatuses = [400, 404];
 
 function getIpDoneCallback(data) {
     $('.your-ip').append(data.data.ip);
@@ -6,7 +7,7 @@ function getIpDoneCallback(data) {
 
 function getIpFailCallback(jqXHR) {
 
-    if (jqXHR.status == 400) {
+    if (allowedErrorStatuses.includes(jqXHR.status)) {
         $('.your-ip').append(jqXHR.responseJSON.error.message);
     } else {
         $('.your-ip').append(
@@ -33,7 +34,7 @@ function geolocationDoneCallback(data) {
 }
 
 function geolocationFailCallback(jqXHR) {
-    if (jqXHR.status == 400) {
+    if (allowedErrorStatuses.includes(jqXHR.status)) {
         $('.additional-info').html(jqXHR.responseJSON.error.message);
     } else {
         $('.additional-info').html(
