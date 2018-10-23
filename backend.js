@@ -5,7 +5,7 @@ function getIpDoneCallback(data) {
 }
 
 function getIpFailCallback(jqXHR) {
-    $("button").prop('disabled', true);
+
     if (jqXHR.status == 400) {
         $('.your-ip').append(jqXHR.responseJSON.error.message);
     } else {
@@ -23,8 +23,6 @@ function getIp(url, doneCallback, failCallback) {
 }
 
 function geolocationDoneCallback(data) {
-
-    $("button").prop('disabled', true);
 
     if (data.hasOwnProperty('error')) {
         $('.additional-info').html(data.error);
