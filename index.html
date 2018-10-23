@@ -25,7 +25,7 @@
 <script src="backend.js"></script>
 <script language="JavaScript">
     $(document).ready(function () {
-        getIp(backendUrl, getIpDoneCallback, getIpFailCallback);
+        getIp(backendUrl + "/ip", getIpDoneCallback, getIpFailCallback);
 
         $("button").click(function () {
             getGeolocation(backendUrl + "/ipinfo", geolocationDoneCallback, geolocationFailCallback)

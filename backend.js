@@ -1,4 +1,4 @@
-let backendUrl = "http://localhost:8000";
+let backendUrl = "http://localhost:8000/api";
 
 function getIpDoneCallback(data) {
     $('.your-ip').append(data.data.ip);

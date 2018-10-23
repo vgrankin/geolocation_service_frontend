@@ -32,7 +32,7 @@ QUnit.test("getIp test done-callback is called (AJAX call)", function () {
 
     // console.log(server.requests); // Logs all requests so far
 
-    server.respondWith("GET", backendUrl, [
+    server.respondWith("GET", backendUrl + "/ip", [
         200,
         {"Content-Type": "application/json"},
         JSON.stringify({"ip": "8.8.8.8"})
@@ -40,7 +40,7 @@ QUnit.test("getIp test done-callback is called (AJAX call)", function () {
 
 
     var callback = sinon.spy();
-    getIp(backendUrl, callback, callback);
+    getIp(backendUrl + "/ip", callback, callback);
 
     server.respond();
 
@@ -89,7 +89,7 @@ QUnit.test("getGeolocation test done-callback is called (AJAX call)", function (
 
     // console.log(server.requests); // Logs all requests so far
 
-    server.respondWith("GET", backendUrl, [
+    server.respondWith("GET", backendUrl + "/ipinfo", [
         200,
         {"Content-Type": "application/json"},
         JSON.stringify({'data': {'city': 'Mountain View', 'country': 'US'}})
@@ -97,7 +97,7 @@ QUnit.test("getGeolocation test done-callback is called (AJAX call)", function (
 
 
     var callback = sinon.spy();
-    getGeolocation(backendUrl, callback, callback);
+    getGeolocation(backendUrl + "/ipinfo", callback, callback);
 
     server.respond();
 
