@@ -25,10 +25,18 @@
 <script src="backend.js"></script>
 <script language="JavaScript">
     $(document).ready(function () {
-        getIp(backendUrl + "/ip", getIpDoneCallback, getIpFailCallback);
+        App.getIp(
+            App.backendUrl + "/ip",
+            App.getIpDoneCallback,
+            App.getIpFailCallback
+        );
 
         $("button").click(function () {
-            getGeolocation(backendUrl + "/ipinfo", geolocationDoneCallback, geolocationFailCallback)
+            App.getGeolocation(
+                App.backendUrl + "/ipinfo",
+                App.geolocationDoneCallback,
+                App.geolocationFailCallback
+            )
         });
     });
 </script>
